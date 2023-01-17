@@ -21,4 +21,7 @@ source activate picrust2
 #run pipeline with and without 16S copy number normalization
 picrust2_pipeline.py -s rep_set/dna-sequences.fasta -i otu_table/feature-table.biom -o picrust_out_norm
 picrust2_pipeline.py -s rep_set/dna-sequences.fasta -i otu_table/feature-table.biom -o picrust_out_notnorm --skip_norm
+
+#for both
+63 of 3140 ASVs were above the max NSTI cut-off of 2.0 and were removed from the downstream analyses.
 ```
