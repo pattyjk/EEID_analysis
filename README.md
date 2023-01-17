@@ -1,1 +1,3 @@
-# EEID_analysis
+# EEID analysis
+
+Analysis of EEID data.
