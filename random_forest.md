@@ -1,4 +1,6 @@
 ## Random forest of KOs
+Notes: most common response to temp/dose is metabolism...wicked cool
+
 ```
 library("randomForest")
 library("plyr")
