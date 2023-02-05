@@ -1,6 +1,6 @@
 ## Networking with CoNet/Cytoscape
-
-R
+---
+### Splitting ASV tables
 
 ```
 setwd("./Github/EEID_analysis/")
@@ -67,13 +67,91 @@ asv.dosectrl<-asv.dosectrl %>% relocate(OTU)
 write.table(asv.dosectrl, 'split_asv_tables/asv.dosectrl.txt', quote=F, sep="\t", row.names = F)
 
 #subset table for each dose/temp combo
-
-
-
 ```
+Networks run in CoNet app in Cytoscape. Spearman correlations, p<0.05, Benjamini-Hochberg correct p-value, OTU abundance >2 
 
+### Adding metadata to Cytoscape tables
 ```
-#using CoNet/Cytoscape
-#calculate full network
-java be.ac.vub.bsb.cooccurrence.cmd.CooccurrenceAnalyser --method ensemble --input C:\Users\patty\OneDrive\Documents\Github\EEID_analysis\otu_table.txt --measure2 supp --scoremergestrategy mean --correlnonrandp none --multicorr none --minsupport 2 --randroutine none --minetmiestimator mi.shrink --kernelwidth 0.25 --nantreatmentparam 1 --networkmergestrategy
+test<-read.csv("Network_node_tables/dose103-t14.csv", header=T)
+setwd("EEID_analysis")
+
+#change to nodes folder
+setwd("./Network_node_tables/")
+
+#list files
+setwd("/Users/patty/OneDrive/Documents/Github/EEID_analysis/Network_node_tables/")
+nodes<-list.files("./")
+
+#read in all files
+node_tables<-sapply(nodes, function(x) read.csv(x, header=T))
+
+#read in tax/inhibiton file
+tax_inib<-read.delim("/Users/patty/OneDrive/Documents/Github/EEID_analysis/taxa_calls_inhib.txt", header=T)
+
+#split taxonomy 
+library(tidyverse)
+tax_inhib<-separate(tax_inib, Taxon, sep = ";", into=c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"))
+
+#add taxonomy to all files
+node_tables<-lapply(node_tables, function(x) merge(x, tax_inhib, by.x='Label', by.y='Feature.ID', all.x=T, all.y=F))
+
+#write them back to a file
+dir.create("nodes_with_tax_inhib")
+setwd("nodes_with_tax_inhib/")
+for(i in names(node_tables)){
+  write.table(node_tables[[i]], paste0(i,".txt"), sep="\t", row.names=F, quote=F)
+}
+setwd("/Users/patty/OneDrive/Documents/Github/EEID_analysis/")
+
+#get node stats
+library(plyr)
+library(ggplot2)
+library(dplyr)
+
+#set working directory to node folder
+setwd("Network_node_tables/")
+
+#list files of interest
+bsg <- dir(pattern = "\\.csv$")
+
+#add file names to list of files
+names(bsg) <- basename(bsg)
+
+#read in the data and catenate
+dbsg <- ldply(bsg, read.csv)
+
+#read in sample names
+samps<-read.delim("/Users/patty/OneDrive/Documents/Github/EEID_analysis/network_samps.txt", header=T)
+
+#strip '.csv
+samps$Name<-gsub("\\.csv", "", samps$Name)
+dbsg$.id<-gsub("\\.csv", "", dbsg$.id)
+samps$Name<-gsub("\\-", "", samps$Name)
+dbsg$.id<-gsub("\\-", "", dbsg$.id)
+dbsg$Name<-dbsg$.id
+
+samps$Name<-dbsg$Name
+
+samps$Name<-as.factor(samps$Name)
+dbsg$Name<-as.factor(dbsg$Name)
+
+dbsg$Row <- seq.int(nrow(dbsg))
+dbsg$Name2 <-paste(dbsg$Row, dbsg$Name)
+
+samps$Row <- seq.int(nrow(samps))
+samps$Name2 <-paste(samps$Row, samps$Name)
+
+
+#add sample metadata (dose & temp) to node table
+dbsg2<-merge(dbsg, samps, by="Name2")
+
+ggplot(dbsg2[,-which(dbsg2$Dose == N/A)], aes(Dose, posdegree))+
+  geom_boxplot()+
+  facet_wrap(~Temperature)
+
+ggplot(dbsg2, aes(Dose, degree))+
+  geom_point()+
+  geom_smooth()+
+  facet_wrap(~Temperature)
+
 ```

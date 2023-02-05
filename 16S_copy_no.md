@@ -16,14 +16,23 @@ asv_means<-as.data.frame(colMeans(na.omit(div_tab)))
 asv_means$SampleID<-row.names(asv_means)
 names(asv_means)<-c("Weighted_operon", "SampleID")
 
+
 #read in metadata
 meta<-read.delim("Data/Metadata_NSFEEID_16SRuns_1234Merged_plusExpData.txt", header=T)
-
 
 #append 16S operon number to metadata
 meta<-merge(meta, asv_means, by="SampleID")
 
+ggplot(meta, aes(Dose2, Weighted_operon))+
+  geom_boxplot()+
+  facet_wrap(~Temperature2)
+
+ggplot(meta, aes(as.numeric(Temperature2), Weighted_operon))+
+  geom_point()+
+  facet_wrap(~Dose)
+
 ggplot(meta, aes(TimeWeek, Weighted_operon))+
-geom_point()+
-facet_wrap(~Dose)
+  geom_point()+
+  facet_wrap(~Dose)
+
 ```
