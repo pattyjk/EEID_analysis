@@ -1,4 +1,3 @@
-## Random forest to identify important KOs
 ## Random forest of KOs
 ```
 library("randomForest")
@@ -107,13 +106,13 @@ top50_sum<-merge(top50_sum, tax, by='KO')
 colour_tax<-rainbow(50, s=1, v=1)[sample(1:50,50)]
 
 library(ggplot2)
-ggplot(top50_sum, aes(KO, mean, fill=Level1))+
+ggplot(top50_sum, aes(Level2, mean, fill=Level2))+
   geom_bar(stat='identity')+
   scale_fill_manual(values=colour_tax)+
   facet_wrap(~DoseTemp, ncol = 4)+
   theme_bw()+
   coord_flip()+
-  ggtitle("Top 20 OTUs in distinguishing categories")+
+  ggtitle("Top 50 KOs in distinguishing categories")+
   guides(fill=guide_legend(ncol=1))+
   ylab("Mean Relative Abundance")+
   xlab("")+
