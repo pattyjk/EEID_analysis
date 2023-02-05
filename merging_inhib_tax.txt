@@ -1,0 +1,17 @@
+```
+setwd("Github/EEID_analysis/")
+
+inhib_hits<-read.delim("EEID_RepSet_toInhib.txt", header=T)
+inhib_hits<- as.data.frame(inhib_hits[,9:10])
+
+taxa_calls<-read.delim("taxonomy.tsv", header=T)
+
+#add in inib hits to taxonomy
+taxa_calls_inhib<-merge(taxa_calls, inhib_hits, by.x="Feature.ID", by.y="query_id", all.x = T)
+
+#replace asterix with N/A
+taxa_calls_inhib$database_id<-gsub("\\*", "Noninhibitory", as.character(taxa_calls_inhib$database_id))
+
+#write to file
+write.table(taxa_calls_inhib, 'taxa_calls_inhib.txt', sep="\t", row.names=F, quote=F)
+```
