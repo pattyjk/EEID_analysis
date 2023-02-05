@@ -149,3 +149,39 @@ ko_m<-merge(ko_m, meta, by='SampleID')
 ggplot(ko_m, aes(x = SampleID, y = KO, fill = Abun)) +
   geom_tile()
 ```
+
+## Look at secondary metabolites
+````
+#add kegg to table
+ko_m<-merge(ko_m, full_kegg, by.x='KO', by.y='KO')
+
+#filter out non-secondary metabolite KO
+second_metab<-ko_m[which(ko_m$Level2 == "Biosynthesis of other secondary metabolites"),]
+
+#check if filtering looks good, cause I paranoid like that
+dim(second_metab)
+
+#plot all secondary metabolites
+ggplot(second_metab, aes(Dose2, Abun))+
+  geom_boxplot()+
+  facet_wrap(~Temperature)+
+  scale_y_log10() 
+#dose increase secondary metabolite procution, except at 6C
+
+#split  table by Temperature
+meta_split<-split(second_metab,f = second_metab$Temperature)
+
+##calculate correlation between dose/abundance
+set.seed(515)
+cor.test(meta_split$T14$Abun, as.numeric(meta_split$T14$Dose2))
+#no correlation
+
+cor.test(meta_split$T6$Abun, as.numeric(meta_split$T6$Dose2))
+#signficant negative correlation
+
+cor.test(meta_split$T22$Abun, as.numeric(meta_split$T22$Dose2))
+#significatn positive correlation
+
+cor.test(second_metab$Abun, as.numeric(second_metab$Temperature2))
+#signficatn negative correlation with temperature
+```
