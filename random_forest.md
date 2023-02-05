@@ -1,4 +1,5 @@
 ## Random forest to identify important KOs
+## Random forest of KOs
 ```
 library("randomForest")
 library("plyr")
@@ -55,7 +56,7 @@ set.seed(515)
 RF_treatment_classify<-randomForest(x=otu_table_scaled_treatment[,1:(ncol(otu_table_scaled_treatment)-1)], y=otu_table_scaled_treatment[ , ncol(otu_table_scaled_treatment)] , ntree=5, importance=TRUE, proximities=TRUE)
 
 #permutation test
-RF_treatment_classify_sig<-rf.significance(x=RF_treatment_classify, xdata=otu_table_scaled_treatment[,1:(ncol(otu_table_scaled_treatment)-1)], nperm=1000 , ntree=501)
+RF_treatment_classify_sig<-rf.significance(x=RF_treatment_classify, xdata=otu_table_scaled_treatment[,1:(ncol(otu_table_scaled_treatment)-1)], nperm=10 , ntree=5)
 
 #identifying important features
 RF_state_classify_imp <- as.data.frame(RF_treatment_classify$importance)
@@ -69,67 +70,47 @@ barplot(RF_state_classify_imp_sorted[1:50,"MeanDecreaseAccuracy"], las=2, names.
 
 ## Plot mean abundance of top 50 most important OTUs
 ```
-top50_feat<-as.data.frame(RF_state_classify_imp_sorted$features[1:20])
-names(top50_feat)<-c("OTU")
+top50_feat<-as.data.frame(RF_state_classify_imp_sorted$features[1:50])
+names(top50_feat)<-c("KO")
 str(top50_feat)
 
 #read in KO info, extract taxonomy
 tax<-read.delim("full_kegg.txt", header=T)
 
-#change to relative abundance
+#change original KO table to relative abundance
 library(vegan)
 s16<-decostand(s16, method = 'total')
-#check to make sure rel abund
-#rowSums(s16[,-52])
+
+#check to make sure rel abund cause I got paranoia about these thangs
+rowSums(s16)
 
 #extract top 50 from OTU table
-s16.top50<-s16[rownames(s16) %in% top50_feat$OTU,]
+s16.top50<-s16[rownames(s16) %in% top50_feat$KO,]
 dim(s16.top50)  
-s16.top50$OTU<-row.names(s16.top50)
-names(s16.top50)
-rownames(s16.top50)
+#50 by 499
+s16.top50$KO<-row.names(s16.top50)
 
 #get mean relative abundance of each OTU in the 4 cats
 library(reshape)
 top50_m<-melt(s16.top50)
-names(top50_m)<-c("OTU", "SampleID", 'Rel_abund')
+names(top50_m)<-c("KO", "SampleID", 'Rel_abund')
 library(plyr)
 top50_m<-merge(top50_m, meta, by='SampleID')
-top50_sum<-ddply(top50_m, c('OTU', "Treatment"), summarize, mean=mean(Rel_abund), sd=sd(Rel_abund), n=length(Rel_abund), se=sd/n)
-top50_sum<-merge(top50_sum, s16_tax, by='OTU')
+top50_sum<-ddply(top50_m, c('KO', "DoseTemp"), summarize, mean=mean(Rel_abund), sd=sd(Rel_abund), n=length(Rel_abund), se=sd/n)
+top50_sum<-merge(top50_sum, tax, by='KO')
 
-#split taxonomy into groups
-
-library(tidyr)
-library(stringi)
-top50_sum<-separate(top50_sum, taxonomy, sep=";", into=c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"))
-
-#fix the NAs and taxonomy
-top50_sum$Genus[is.na(top50_sum$Genus)] <- "Unassigned"
-top50_sum$Family[is.na(top50_sum$Genus)] <- "Unassigned"
-top50_sum$Order[is.na(top50_sum$Genus)] <- "Unassigned"
-top50_sum$Class[is.na(top50_sum$Genus)] <- "Unassigned"
-top50_sum$Genus<-gsub('D_5__', '', top50_sum$Genus)
-top50_sum$Family<-gsub('D_4__', '', top50_sum$Family)
-top50_sum$Order<-gsub('D_3__', '', top50_sum$Order)
-top50_sum$Class<-gsub('D_2__', '', top50_sum$Class)
-top50_sum$Phylum<-gsub('D_1__', '', top50_sum$Phylum)
-
-#fix treatment
-top50_sum$Treatment<-gsub('No Tx', 'Wild Birds', top50_sum$Treatment)
-top50_sum$Treatment<-gsub('Experimental', 'Stressed', top50_sum$Treatment)
 ```
 
 ## plot the data
 ```
-colour_tax<-rainbow(41, s=1, v=1)[sample(1:41,41)]
-pal<-c("#771155", "#CC99BB", "#114477", "#4477AA", "#117777", "#44AAAA", "#77CCCC", "#117744", "#44AA77", "#88CCAA", "#777711", "#AAAA44", "#DDDD77", "#774411", "#AA7744", "#DDAA77", "#771122", "#AA4455", "#DD7788","#41AB5D", "#252525", "#525252", "#737373", "#969696")
+#define a color pallet n=50
+colour_tax<-rainbow(50, s=1, v=1)[sample(1:50,50)]
 
 library(ggplot2)
-ggplot(top50_sum, aes(OTU, mean, fill=Genus))+
+ggplot(top50_sum, aes(KO, mean, fill=Level1))+
   geom_bar(stat='identity')+
-  scale_fill_manual(values=pal)+
-  facet_wrap(~Treatment, ncol = 4)+
+  scale_fill_manual(values=colour_tax)+
+  facet_wrap(~DoseTemp, ncol = 4)+
   theme_bw()+
   coord_flip()+
   ggtitle("Top 20 OTUs in distinguishing categories")+
