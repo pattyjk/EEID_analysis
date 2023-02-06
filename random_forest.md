@@ -54,22 +54,25 @@ otu_table_scaled_treatment$DoseTemp<-as.factor(otu_table_scaled_treatment$DoseTe
 
 #run model
 set.seed(515)
-RF_treatment_classify<-randomForest(x=otu_table_scaled_treatment[,1:(ncol(otu_table_scaled_treatment)-1)], y=otu_table_scaled_treatment[ , ncol(otu_table_scaled_treatment)] , ntree=5, importance=TRUE, proximities=TRUE)
+RF_treatment_classify<-randomForest(x=otu_table_scaled_treatment[,1:(ncol(otu_table_scaled_treatment)-1)], y=otu_table_scaled_treatment[ , ncol(otu_table_scaled_treatment)] , ntree=500, importance=TRUE, proximities=TRUE)
 
 #permutation test
-RF_treatment_classify_sig<-rf.significance(x=RF_treatment_classify, xdata=otu_table_scaled_treatment[,1:(ncol(otu_table_scaled_treatment)-1)], nperm=10 , ntree=5)
+RF_treatment_classify_sig<-rf.significance(x=RF_treatment_classify, xdata=otu_table_scaled_treatment[,1:(ncol(otu_table_scaled_treatment)-1)], nperm=1000, ntree=500)
 
 #identifying important features
 RF_state_classify_imp <- as.data.frame(RF_treatment_classify$importance)
-RF_state_classify_imp$features <- rownames( RF_state_classify_imp )
+RF_state_classify_imp$features <- rownames( RF_state_classify_imp)
 RF_state_classify_imp_sorted <- arrange( RF_state_classify_imp  , desc(MeanDecreaseAccuracy)  )
 barplot(RF_state_classify_imp_sorted$MeanDecreaseAccuracy, ylab="Mean Decrease in Accuracy (Variable Importance)", main="RF Classification Variable Importance Distribution")
 
 #top 50 features
-barplot(RF_state_classify_imp_sorted[1:50,"MeanDecreaseAccuracy"], las=2, names.arg=RF_state_classify_imp_sorted[1:10,"features"] , ylab="Mean Decrease in Accuracy (Variable Importance)", main="Classification RF")  
+barplot(RF_state_classify_imp_sorted[1:50,"MeanDecreaseAccuracy"], las=2, names.arg=RF_state_classify_imp_sorted[1:50,"features"] , ylab="Mean Decrease in Accuracy (Variable Importance)", main="Classification RF")  
+
+#write RF to file becauase it takes a long time to run and ain't nobody got time for that
+save.image("C:/Users/patty/OneDrive/Documents/Github/EEID_analysis/random_forest_KO.RData")
 ```
 
-## Plot mean abundance of top 50 most important OTUs
+## Plot mean abundance of top 50 most important KOs
 ```
 top50_feat<-as.data.frame(RF_state_classify_imp_sorted$features[1:50])
 names(top50_feat)<-c("KO")
