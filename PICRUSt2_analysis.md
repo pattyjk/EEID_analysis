@@ -63,10 +63,37 @@ Upper quantiles of permutations (null model):
 Permutation: free
 Number of permutations: 999
 
-They matrices are mathmatically different with only ~48% correlation between the two. Plot the KO data as a PCoA
+The matrices are mathmatically different with only ~48% correlation between the two. Plot the KO data as a PCoA
+
+## Calculate maths for communitiy similairty 
+```
+#calculate BC distance
+s16.dis<-as.data.frame(as.matrix(vegdist(t(ko_table), method='bray')))
+s16.dis2<-s16.dis
+s16.dis2$SampleID<-row.names(s16.dis2)
+
+#select only columns of interest for the metadata
+meta2<-meta[,c(1,5,11)]
+
+#add metadata 
+s16.dis2<-merge(s16.dis2, meta2, by='SampleID')
+
+#remove sample id column
+s16.dis3<-s16.dis2[,2:502]
+
+adonis2(s16.dis3[,-c(500:501)] ~ Dose+Temperature, data=s16.dis3[,c(500:501)], permutations = 10000)
+```
+## Adonis output
+             Df SumOfSqs      R2       F    Pr(>F)    
+Dose          4   0.2959 0.02121  2.7767    0.0047 ** 
+Temperature   2   0.5466 0.03919 10.2600 9.999e-05 ***
+Residual    492  13.1053 0.93960                      
+Total       498  13.9478 1.00000
+
+Significant effects of dose and temperature.
 
 ```
-#calculate PCoA with BRay-Curtis
+#calculate PCoA with Bray-Curtis
 ko_pcoa<-capscale(t(ko_table)  ~ 1, distance='bray')
 
 
