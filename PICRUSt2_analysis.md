@@ -212,3 +212,36 @@ cor.test(meta_split$T22$Abun, as.numeric(meta_split$T22$Dose2))
 cor.test(second_metab$Abun, as.numeric(second_metab$Temperature2))
 #signficatn negative correlation with temperature
 ```
+
+## Dormancy genes
+```
+#rpfC
+ggplot(ko_m[which(ko_m$KO == 'K10715'),], aes(as.factor(Dose2), Abun))+
+  geom_boxplot()+
+  facet_wrap(~Temperature)+
+  scale_y_log10() 
+
+#spo0A
+ggplot(ko_m[which(ko_m$KO == 'K07699'),], aes(as.factor(Dose2), Abun))+
+  geom_boxplot()+
+  facet_wrap(~Temperature)+
+  scale_y_log10() 
+
+#dinJ
+ggplot(ko_m[which(ko_m$KO == 'K07473'),], aes(as.factor(Dose2), Abun))+
+  geom_boxplot()+
+  facet_wrap(~Temperature)+
+  scale_y_log10() 
+
+#hipA
+ggplot(ko_m[which(ko_m$KO == 'K07154'),], aes(as.factor(Dose2), Abun))+
+  geom_boxplot()+
+  facet_wrap(~Temperature)+
+  scale_y_log10() 
+
+#relB
+ggplot(ko_m[which(ko_m$KO == 'K18918'),], aes(as.factor(Dose2), Abun))+
+  geom_boxplot()+
+  facet_wrap(~Temperature)+
+  scale_y_log10() 
+```
