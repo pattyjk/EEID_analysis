@@ -1,5 +1,5 @@
 ## Networking with CoNet/Cytoscape
----
+
 ### Splitting ASV tables
 
 ```
@@ -68,7 +68,7 @@ asv.dosectrl<-asv.dosectrl %>% relocate(OTU)
 write.table(asv.dosectrl, 'split_asv_tables/asv.dosectrl.txt', quote=F, sep="\t", row.names = F)
 ```
 
-##subset table for each dose/temp/time combo
+## Subset table for each dose/temp/time combo
 ```
 setwd("Github/EEID_analysis/")
 library(tidyverse)
@@ -247,10 +247,46 @@ write.table(asv.dose106.14A, 'split_asv_tables/asv.dose106.14A.txt', quote=F, se
 write.table(asv.dose106.14B, 'split_asv_tables/asv.dose106.14B.txt', quote=F, sep="\t", row.names = F)
 write.table(asv.dose106.22A, 'split_asv_tables/asv.dose106.22A.txt', quote=F, sep="\t", row.names = F)
 write.table(asv.dose106.22B, 'split_asv_tables/asv.dose106.22B.txt', quote=F, sep="\t", row.names = F)
-
-
 ```
-Networks run in CoNet app in Cytoscape. Spearman correlations, p<0.05, Benjamini-Hochberg correct p-value, OTU abundance >2 
+Networks run in CoNet app in Cytoscape. Spearman correlations, p<0.05, Benjamini-Hochberg correct p-value, OTU abundance >2, Spearman rho>0.7
+
+## Plot network statistics
+```
+#read in change in network statistics
+stats<-read.delim("network_stats_delta.txt", header=T)
+
+#load ggplot
+library(ggplot2)
+
+#plot each metric
+ggplot(stats, aes(as.numeric(Dose), No_nodes))+
+  geom_point()+
+  theme_bw()+
+  facet_wrap(~Temp)+
+  ylab("Change in # nodes (T1-T0)")+
+  xlab("Dose")
+
+ggplot(stats, aes(as.numeric(Dose), No_edges))+
+  geom_point()+
+  theme_bw()+
+  facet_wrap(~Temp)+
+  ylab("Change in # edges (T1-T0)")+
+  xlab("Dose")
+
+ggplot(stats, aes(as.numeric(Dose), Avg_num_neighbors))+
+  geom_point()+
+  theme_bw()+
+  facet_wrap(~Temp)+
+  ylab("Change in avg # edges (T1-T0)")+
+  xlab("Dose")
+
+ggplot(stats, aes(as.numeric(Dose), Clus_coeffi))+
+  geom_point()+
+  theme_bw()+
+  facet_wrap(~Temp)+
+  ylab("Change in Clustering Coefficient (T1-T0)")+
+  xlab("Dose")
+```
 
 ### Adding metadata to Cytoscape tables
 ```
