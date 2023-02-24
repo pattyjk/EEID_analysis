@@ -122,10 +122,10 @@ write.table(asv.dosectrl.22B, 'split_asv_tables/asv.dosectrl.22B.txt', quote=F, 
 
 #dose 10^3
 asv.dose103.6B<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.3.T6$SampleID]
-asv.dose103.6A<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.3.T6$SampleID]
-asv.dose103.14A<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.3.T14$SampleID]
+asv.dose103.6A<-asv.tbl[, names(asv.tbl) %in% meta_split2$A.d5x10.3.T6$SampleID]
+asv.dose103.14A<-asv.tbl[, names(asv.tbl) %in% meta_split2$A.d5x10.3.T14$SampleID]
 asv.dose103.14B<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.3.T14$SampleID]
-asv.dose103.22A<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.3.T22$SampleID]
+asv.dose103.22A<-asv.tbl[, names(asv.tbl) %in% meta_split2$A.d5x10.3.T22$SampleID]
 asv.dose103.22B<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.3.T22$SampleID]
 
 #create column for ASV names
@@ -154,10 +154,10 @@ write.table(asv.dose103.22B, 'split_asv_tables/asv.dose103.22B.txt', quote=F, se
 
 #dose 10^4
 asv.dose104.6B<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.4.T6$SampleID]
-asv.dose104.6A<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.4.T6$SampleID]
-asv.dose104.14A<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.4.T14$SampleID]
+asv.dose104.6A<-asv.tbl[, names(asv.tbl) %in% meta_split2$A.d5x10.4.T6$SampleID]
+asv.dose104.14A<-asv.tbl[, names(asv.tbl) %in% meta_split2$A.d5x10.4.T14$SampleID]
 asv.dose104.14B<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.4.T14$SampleID]
-asv.dose104.22A<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.4.T22$SampleID]
+asv.dose104.22A<-asv.tbl[, names(asv.tbl) %in% meta_split2$A.d5x10.4.T22$SampleID]
 asv.dose104.22B<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.4.T22$SampleID]
 
 #create column for ASV names
@@ -186,10 +186,10 @@ write.table(asv.dose104.22B, 'split_asv_tables/asv.dose104.22B.txt', quote=F, se
 
 #dose 10^5
 asv.dose105.6B<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.5.T6$SampleID]
-asv.dose105.6A<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.5.T6$SampleID]
-asv.dose105.14A<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.5.T14$SampleID]
+asv.dose105.6A<-asv.tbl[, names(asv.tbl) %in% meta_split2$A.d5x10.5.T6$SampleID]
+asv.dose105.14A<-asv.tbl[, names(asv.tbl) %in% meta_split2$A.d5x10.5.T14$SampleID]
 asv.dose105.14B<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.5.T14$SampleID]
-asv.dose105.22A<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.5.T22$SampleID]
+asv.dose105.22A<-asv.tbl[, names(asv.tbl) %in% meta_split2$A.d5x10.5.T22$SampleID]
 asv.dose105.22B<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.5.T22$SampleID]
 
 #create column for ASV names
@@ -218,10 +218,10 @@ write.table(asv.dose105.22B, 'split_asv_tables/asv.dose105.22B.txt', quote=F, se
 
 #dose 10^6
 asv.dose106.6B<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.6.T6$SampleID]
-asv.dose106.6A<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.6.T6$SampleID]
-asv.dose106.14A<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.6.T14$SampleID]
+asv.dose106.6A<-asv.tbl[, names(asv.tbl) %in% meta_split2$A.d5x10.6.T6$SampleID]
+asv.dose106.14A<-asv.tbl[, names(asv.tbl) %in% meta_split2$A.d5x10.6.T14$SampleID]
 asv.dose106.14B<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.6.T14$SampleID]
-asv.dose106.22A<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.6.T22$SampleID]
+asv.dose106.22A<-asv.tbl[, names(asv.tbl) %in% meta_split2$A.d5x10.6.T22$SampleID]
 asv.dose106.22B<-asv.tbl[, names(asv.tbl) %in% meta_split2$B.d5x10.6.T22$SampleID]
 
 #create column for ASV names
