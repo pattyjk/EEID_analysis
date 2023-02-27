@@ -428,7 +428,39 @@ ggplot(stats, aes(as.numeric(Dose), Clus_coeffi))+
   xlab("Dose")
 ```
 
+## Network statistics through time at dose = 10^3
+```
+#read in timecourse network stats
+stats<-read.delim("network_stats_timecourse.txt", header=T)
 
+ggplot(stats, aes(Time, No_nodes))+
+  facet_wrap(~Temp)+
+  geom_point()+
+  theme_bw()+
+  ylab("Number of network nodes")+
+  xlab("Time")
+
+ggplot(stats, aes(Time, No_edges))+
+  facet_wrap(~Temp)+
+  geom_point()+
+  theme_bw()+
+  ylab("Number of network edges")+
+  xlab("Time")
+
+ggplot(stats, aes(Time, Avg_num_neighbors))+
+  facet_wrap(~Temp)+
+  geom_point()+
+  theme_bw()+
+  ylab("Average number of network neighbors")+
+  xlab("Time")
+
+ggplot(stats, aes(Time, Clus_coeffi))+
+  facet_wrap(~Temp)+
+  geom_point()+
+  theme_bw()+
+  ylab("Clustering Coefficient")+
+  xlab("Time")
+```
 
 
 ### Adding metadata to Cytoscape tables
