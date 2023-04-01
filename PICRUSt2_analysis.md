@@ -25,8 +25,6 @@ picrust2_pipeline.py -s rep_set/dna-sequences.fasta -i otu_table/feature-table.b
 
 ## Bring data into R
 ```
-setwd("Github/EEID_analysis")
-
 #read in KO IDs
 full_kegg<-read.delim("./full_kegg.txt", header = T)
 
@@ -47,6 +45,7 @@ asv.dis<-vegdist(t(asv.tbl), method='bray')
 ko.dis<-vegdist(t(ko_table), method='bray')
 
 #calculate a mantel test to see if the patterns differ between the methods
+set.seed(515)
 mantel(asv.dis, ko.dis, method="pearson", permutations=999, strata = NULL,
        na.rm = FALSE, parallel = getOption("mc.cores"))
 ```
@@ -63,7 +62,7 @@ Upper quantiles of permutations (null model):
 Permutation: free
 Number of permutations: 999
 
-The matrices are mathmatically different with only ~48% correlation between the two. Plot the KO data as a PCoA
+The matrices are mathmatically correlated with ~48% correlation between the two. Plot the KO data as a PCoA
 
 ## Calculate maths for communitiy similairty 
 ```
@@ -96,13 +95,11 @@ Significant effects of dose and temperature.
 #calculate PCoA with Bray-Curtis
 ko_pcoa<-capscale(t(ko_table)  ~ 1, distance='bray')
 
-
 #pull out x/y coordinates
 ko.scores<-scores(ko_pcoa)
 
 #grab only sample coordinates, write to data frame
 ko.coords<-as.data.frame(ko.scores$sites)
-
 
 #create sample names as a column
 ko.coords$SampleID<-row.names(ko.coords)
@@ -117,6 +114,7 @@ ko.coords<-merge(ko.coords, meta, by.x='SampleID', by.y='SampleID')
 #24.8
 
 #plot PCoA
+library(ggplot2)
 ggplot(ko.coords, aes(MDS1, MDS2, colour=Dose2))+
   geom_point(aes(size=2))+
   theme_bw()+
@@ -146,7 +144,6 @@ ko.scores<-scores(ko_pcoa)
 #grab only sample coordinates, write to data frame
 ko.coords<-as.data.frame(ko.scores)
 
-
 #create sample names as a column
 ko.coords$SampleID<-row.names(ko.coords)
 
@@ -167,14 +164,13 @@ library(reshape2)
 ko_table2<-ko_table
 ko_table2$KO<-row.names(ko_table2)
 ko_m<-melt(ko_table2)
+
+#give better names
 str(ko_m)
 names(ko_m)<-c("KO", "SampleID", "Abun")
 
 #add metadata
 ko_m<-merge(ko_m, meta, by='SampleID')
-
-ggplot(ko_m, aes(x = SampleID, y = KO, fill = Abun)) +
-  geom_tile()
 ```
 
 ## Look at secondary metabolites
@@ -182,18 +178,44 @@ ggplot(ko_m, aes(x = SampleID, y = KO, fill = Abun)) +
 #add kegg to table
 ko_m<-merge(ko_m, full_kegg, by.x='KO', by.y='KO')
 
-#filter out non-secondary metabolite KO
-second_metab<-ko_m[which(ko_m$Level2 == "Biosynthesis of other secondary metabolites"),]
+#filter out not time A/B
+ko_m2<-ko_m[which(ko_m$TimeWeekCat == "A" | ko_m$TimeWeekCat =="B"),]
 
-#check if filtering looks good, cause I paranoid like that
-dim(second_metab)
-
-#plot all secondary metabolites
-ggplot(second_metab, aes(Dose2, Abun))+
+#plot all to see patterns
+ggplot(ko_m2, aes(Dose2, Abun, fill=TimeWeekCat))+
   geom_boxplot()+
   facet_wrap(~Temperature)+
   scale_y_log10() 
-#dose increase secondary metabolite procution, except at 6C
+  
+#calculate summary stats for each
+ko_sum_AB<-ddply(ko_m2, c("KO", "Dose", "Temperature", "TimeWeekCat"), summarize, mean=mean(Abun), n=length(Abun), sd=sd(Abun), se=sd/n)
+
+#calcualte delta
+ko_sum_delta<-ko_sum_AB[,1:3]
+ko_split<-split(ko_sum_AB, ko_sum_AB$TimeWeekCat)
+ko_sum_delta$delta<-ko_split$B$mean - ko_split$A$mean
+
+#add KO metadata
+ko_sum_delta<-merge(ko_sum_delta, full_kegg, by='KO')
+
+#plot all to see patterns
+ggplot(ko_sum_delta, aes(Dose, delta))+
+  geom_boxplot()+
+  facet_wrap(Temperature~Level1)+
+  scale_y_log10() +
+  ylab("Change in KO abundance (T1-T0)")+
+  xlab("Dose")
+  
+#filter out non-secondary metabolite KO
+second_metab<-ko_sum_delta[which(ko_sum_delta$Level2 == "Biosynthesis of other secondary metabolites"),]
+
+#plot secondary metabolites delta
+ggplot(second_metab, aes(Dose, delta))+
+geom_boxplot()+
+facet_wrap(~Temperature)+
+theme_bw()+
+xlab("Dose")+
+ylab("Change in KO Abundance")
 
 #split  table by Temperature
 meta_split<-split(second_metab,f = second_metab$Temperature)

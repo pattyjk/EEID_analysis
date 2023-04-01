@@ -1,25 +1,31 @@
-Condition	Dose	Temp
-dose103-t6.csv	5000.00	6
-dose104-t6.csv	50000.00	6
-dose105-t6.csv	500000.00	6
-dose106-t6.csv	5000000.00	6
-dosectrl-t6.csv	0.00	6
-temp6.csv	N/A	6
-dose103-t14.csv	5000.00	14
-dose104-t14.csv	50000.00	14
-dose105-t14.csv	500000.00	14
-dose106-t14.csv	5000000.00	14
-dosectrl-t14.csv	0.00	14
-temp14.csv	N/A	14
-dose103-t22.csv	5000.00	22
-dose104-t22.csv	50000.00	22
-dose105-t22.csv	500000.00	22
-dose106-t22.csv	5000000.00	22
-dosectrl-t22.csv	0.00	22
-temp22.csv	N/A	22
-dose103.csv	5000.00	N/A
-dose104.csv	50000.00	N/A
-dose105.csv	500000.00	N/A
-dose106.csv	5000000.00	N/A
-dosectrl.csv	0.00	N/A
-full_network.csv	N/A	N/A
+Condition2	Conditon	Dose	Temp	Time
+Network_edge_tables/103.14a.csv	1	5.00E+03	14	A
+Network_edge_tables/103.14b.csv	2	5.00E+03	14	B
+Network_edge_tables/103.22a.csv	3	5.00E+03	22	A
+Network_edge_tables/103.22b.csv    	4	5.00E+03	22	B
+Network_edge_tables/103.6a.csv 	5	5.00E+03	6	A
+Network_edge_tables/1036b.csv 	6	5.00E+03	6	B
+Network_edge_tables/104.14a.csv	7	5.00E+04	14	A
+Network_edge_tables/104.14b.csv    	8	5.00E+04	14	B
+Network_edge_tables/104.22a.csv	9	5.00E+04	22	A
+Network_edge_tables/104.22b.csv    	10	5.00E+04	22	B
+Network_edge_tables/104.6a.csv 	11	5.00E+04	6	A
+Network_edge_tables/104.6b.csv	12	5.00E+04	6	B
+Network_edge_tables/105.14a.csv	13	5.00E+05	14	A
+Network_edge_tables/105.14b.csv    	14	5.00E+05	14	B
+Network_edge_tables/105.22a.csv	15	5.00E+05	22	A
+Network_edge_tables/105.22b.csv    	16	5.00E+05	22	B
+Network_edge_tables/105.6a.csv 	17	5.00E+05	6	A
+Network_edge_tables/105.6b.csv	18	5.00E+05	6	B
+Network_edge_tables/106.14a.csv	19	5.00E+06	14	A
+Network_edge_tables/106.14b.csv    	20	5.00E+06	14	B
+Network_edge_tables/106.22a.csv	21	5.00E+06	22	A
+Network_edge_tables/106.22b.csv    	22	5.00E+06	22	B
+Network_edge_tables/106.6a.csv 	23	5.00E+06	6	A
+Network_edge_tables/106.6b.csv	24	5.00E+06	6	B
+Network_edge_tables/ctrl.14a.csv	25	0.00E+00	14	A
+Network_edge_tables/ctrl.14b.csv	26	0.00E+00	14	B
+Network_edge_tables/ctrl.22a.csv	27	0.00E+00	22	A
+Network_edge_tables/ctrl.22b.csv	28	0.00E+00	22	B
+Network_edge_tables/ctrl.6a.csv	29	0.00E+00	6	A
+Network_edge_tables/ctrl.6b.csv	30	0.00E+00	6	B

@@ -16,12 +16,14 @@ asv_means<-as.data.frame(colMeans(na.omit(div_tab)))
 asv_means$SampleID<-row.names(asv_means)
 names(asv_means)<-c("Weighted_operon", "SampleID")
 
-
 #read in metadata
 meta<-read.delim("Data/Metadata_NSFEEID_16SRuns_1234Merged_plusExpData.txt", header=T)
 
 #append 16S operon number to metadata
 meta<-merge(meta, asv_means, by="SampleID")
+
+#calculate delta
+meta_split<-split(meta, meta$TimeWeekCat)
 
 ggplot(meta, aes(Dose2, Weighted_operon))+
   geom_boxplot()+

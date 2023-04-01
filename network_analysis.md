@@ -3,7 +3,6 @@
 ### Splitting ASV tables
 
 ```
-setwd("./Github/EEID_analysis/")
 library(tidyverse)
 #read ASV table
 asv.tbl<-read.delim("otu_table.txt", header=T, row.names=1)
@@ -404,28 +403,32 @@ ggplot(stats, aes(as.numeric(Dose), No_nodes))+
   theme_bw()+
   facet_wrap(~Temp)+
   ylab("Change in # nodes (T1-T0)")+
-  xlab("Dose")
+  xlab("Dose")+
+  geom_smooth()
 
 ggplot(stats, aes(as.numeric(Dose), No_edges))+
   geom_point()+
   theme_bw()+
   facet_wrap(~Temp)+
   ylab("Change in # edges (T1-T0)")+
-  xlab("Dose")
+  xlab("Dose")+
+  geom_smooth()
 
 ggplot(stats, aes(as.numeric(Dose), Avg_num_neighbors))+
   geom_point()+
   theme_bw()+
   facet_wrap(~Temp)+
   ylab("Change in avg # edges (T1-T0)")+
-  xlab("Dose")
+  xlab("Dose")+
+  geom_smooth()
 
 ggplot(stats, aes(as.numeric(Dose), Clus_coeffi))+
   geom_point()+
   theme_bw()+
   facet_wrap(~Temp)+
   ylab("Change in Clustering Coefficient (T1-T0)")+
-  xlab("Dose")
+  xlab("Dose")+
+  geom_smooth()
 ```
 
 ## Network statistics through time at dose = 10^3
@@ -438,28 +441,32 @@ ggplot(stats, aes(Time, No_nodes))+
   geom_point()+
   theme_bw()+
   ylab("Number of network nodes")+
-  xlab("Time")
+  xlab("Time")+
+  geom_smooth()
 
 ggplot(stats, aes(Time, No_edges))+
   facet_wrap(~Temp)+
   geom_point()+
   theme_bw()+
   ylab("Number of network edges")+
-  xlab("Time")
+  xlab("Time")+
+  geom_smooth()
 
 ggplot(stats, aes(Time, Avg_num_neighbors))+
   facet_wrap(~Temp)+
   geom_point()+
   theme_bw()+
   ylab("Average number of network neighbors")+
-  xlab("Time")
+  xlab("Time")+
+  geom_smooth()
 
 ggplot(stats, aes(Time, Clus_coeffi))+
   facet_wrap(~Temp)+
   geom_point()+
   theme_bw()+
   ylab("Clustering Coefficient")+
-  xlab("Time")
+  xlab("Time")+
+  geom_smooth()
 ```
 
 
