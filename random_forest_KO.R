@@ -1,11 +1,11 @@
 ## Random forest of KOs
-Notes: most common response to temp/dose is metabolism...wicked cool
 
 ```
 library("randomForest")
 library("plyr")
 library("rfUtilities")
 library("caret")
+library(ggplot2)
 
 #read in mapping file
 meta<-read.delim("Data/Metadata_NSFEEID_16SRuns_1234Merged_plusExpData.txt", header=T)
@@ -106,7 +106,7 @@ s16<-decostand(otu_table_rare_removed3, method = 'total')
 #check to make sure rel abund cause I got paranoia about these thangs
 rowSums(s16)
 
-#extract top 100 from KO table
+#extract top 50 from KO table
 s16.top50<-s16[rownames(s16) %in% top50_feat$KO,]
 dim(s16.top50)  
 #100 by 252
@@ -141,7 +141,7 @@ sum_split<-merge(sum_split, meta2, by='Dose')
 
 sum_split2<-split(sum_split, sum_split$Temperature)
 
-#define a pallett
+#define a pallet
 pal<-c("#771155", "#CC99BB", "#114477", "#4477AA", "#117777", "#44AAAA", "#77CCCC", "#117744", "#44AA77", "#88CCAA", "#777711", "#AAAA44", "#DDDD77", "#774411", "#AA7744", "#DDAA77", "#771122", "#AA4455", "#DD7788","#41AB5D", "#252525", "#525252", "#737373", "#969696")
 
 #plot it
@@ -180,3 +180,54 @@ ggplot(sum_split2$T22, aes(as.numeric(Dose2), delta, color=Level2))+
   xlab("Dose")
   
 ```
+rf_ko<-read.delim("RF_ko_delta.txt", header=T)
+View(rf_ko)
+library(dplyr)
+library(plyr)
+library(reshape2)
+library(ggplot2)
+
+#calculate correlations between dose/delta abundance
+rf_split<-split(rf_ko, rf_ko$Temperature)
+
+#write function to do it
+func <- function(xx)
+{
+  return(data.frame(COR = cor(xx$Dose, xx$delta)))
+}
+
+#calculate it
+cor14<-ddply(rf_split$T14, .(KO), func)
+cor22<-ddply(rf_split$T22, .(KO), func)
+  cor6<-ddply(rf_split$T6, .(KO), func)
+
+#fix headers and bind
+names(cor14)<-c("KO", "Cor14")
+names(cor22)<-c("KO", "Cor22")
+names(cor6)<-c("KO", "Cor6")
+cors<-merge(cor14, cor22, by='KO')
+cors<-merge(cors, cor6, by='KO')
+
+#reshape data
+cors_m<-melt(cors)
+
+#add metadata
+full_kegg<-read.delim("full_kegg.txt", header=T)
+cors_m<-merge(cors_m, full_kegg, by='KO')
+
+#reorder table by correlation size (ascending)
+cors_m<-cors_m[order(cors_m$value),]
+
+
+#define a pallett
+pal2<-c("#771155","#114477",  "#117744", "#AAAA44",  "#774411",  "#771122", "#41AB5D", "#252525", "#525252")
+pal<-c("#771155", "#CC99BB", "#114477", "#4477AA", "#117777", "#44AAAA", "#77CCCC", "#117744", "#44AA77", "#88CCAA", "#777711", "#AAAA44", "#DDDD77", "#774411", "#AA7744", "#DDAA77", "#771122", "#AA4455", "#DD7788","#41AB5D", "#252525", "#525252", "#737373", "#969696")
+
+ggplot(cors_m, aes(KO, value, color=variable))+
+  geom_point(aes(size=2))+
+  theme_bw()+
+  coord_flip()+
+  facet_wrap(~Level1)+ 
+  #scale_color_manual(values=pal)+
+  geom_hline(yintercept=0, color='black', size=1)+
+  ylab("Spearman Rho")

@@ -1,0 +1,26 @@
+{
+    "id": "67F97053",
+    "path": "~/GitHub/EEID_analysis/random_forest_KO.R",
+    "project_path": "random_forest_KO.R",
+    "type": "r_source",
+    "hash": "3887504210",
+    "contents": "",
+    "dirty": false,
+    "created": 1680445960687.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "233,0",
+        "scrollLine": "212"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1681611772,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1681611772318,
+    "read_only": false,
+    "read_only_alternatives": []
+}

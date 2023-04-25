@@ -436,7 +436,7 @@ ggplot(stats, aes(as.numeric(Dose), Clus_coeffi))+
 #read in timecourse network stats
 stats<-read.delim("network_stats_timecourse.txt", header=T)
 
-ggplot(stats, aes(Time, No_nodes))+
+ggplot(stats, aes(Time, No_nodes, color=Cat))+
   facet_wrap(~Temp)+
   geom_point()+
   theme_bw()+
@@ -444,7 +444,7 @@ ggplot(stats, aes(Time, No_nodes))+
   xlab("Time")+
   geom_smooth()
 
-ggplot(stats, aes(Time, No_edges))+
+ggplot(stats, aes(Time, No_edges, color=Cat))+
   facet_wrap(~Temp)+
   geom_point()+
   theme_bw()+
@@ -452,7 +452,7 @@ ggplot(stats, aes(Time, No_edges))+
   xlab("Time")+
   geom_smooth()
 
-ggplot(stats, aes(Time, Avg_num_neighbors))+
+ggplot(stats, aes(Time, Avg_num_neighbors, color=Cat))+
   facet_wrap(~Temp)+
   geom_point()+
   theme_bw()+
@@ -460,7 +460,7 @@ ggplot(stats, aes(Time, Avg_num_neighbors))+
   xlab("Time")+
   geom_smooth()
 
-ggplot(stats, aes(Time, Clus_coeffi))+
+ggplot(stats, aes(Time, Clus_coeffi, color=Cat))+
   facet_wrap(~Temp)+
   geom_point()+
   theme_bw()+

@@ -1,5 +1,7 @@
 ## PICRUSt2
 
+First part is in QIIME
+
 ```
 #convert qiime2 artifacts to non-qiime artifacts
 #load qiime2
@@ -188,6 +190,7 @@ ggplot(ko_m2, aes(Dose2, Abun, fill=TimeWeekCat))+
   scale_y_log10() 
   
 #calculate summary stats for each
+library(plyr)
 ko_sum_AB<-ddply(ko_m2, c("KO", "Dose", "Temperature", "TimeWeekCat"), summarize, mean=mean(Abun), n=length(Abun), sd=sd(Abun), se=sd/n)
 
 #calcualte delta
