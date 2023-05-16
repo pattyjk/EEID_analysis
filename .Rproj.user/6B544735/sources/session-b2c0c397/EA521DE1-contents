@@ -1,0 +1,31 @@
+otu_table <- read.delim("C:/Users/patty/OneDrive/Desktop/asv_table.txt", row.names=1)
+meta<-read.delim("C:/Users/patty/OneDrive/Desktop/ribbitr_16s_map.txt", header=T)
+
+library(vegan)
+library(ggplot2)
+
+#transpose OTU table
+otu_table_t<-t(otu_table)
+
+#calculate a PCoA plot, unrarefied data
+s16.pcoa<-capscale(otu_table_t ~ 1, distance='bray')
+100*round(s16.pcoa$CA$eig[1]/sum(s16.pcoa$CA$eig), 3)
+#9
+100*round(s16.pcoa$CA$eig[2]/sum(s16.pcoa$CA$eig), 3)
+#5.3
+
+#extract the coordinates
+s16.scores<-scores(s16.pcoa)
+s16.coords<-as.data.frame(s16.scores$sites)
+s16.coords$SampleID<-rownames(s16.coords)
+s16.coords<-merge(s16.coords, meta, by=c('SampleID'))
+
+#plot it yo
+ggplot(s16.coords, aes(MDS1, MDS2, colour=region_id, shape=species_capture
+))+  
+  geom_point(aes(size=2))+
+  theme_bw()+
+  xlab("PC1-26.3%")+
+  ylab("PC2-13.7%")+
+  theme(text = element_text(size=14),
+        axis.text = element_text(size=14), legend.text=element_text(size=14))
