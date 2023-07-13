@@ -1,0 +1,19 @@
+hull_data <- 
+  s16.coords %>%
+  group_by(Location) %>% 
+  slice(chull(MDS1, MDS2))
+
+ggplot(s16.coords, aes(MDS1, MDS2, color=Location))+  
+  geom_point(size=2)+
+  theme_minimal()+
+  xlab("PC1-42.9%")+
+  scale_color_manual(values=c("BLACK", "GREY"))+
+  ylab("PC2-7.4%")+
+  theme(text = element_text(size=14),
+        axis.text = element_text(size=14), legend.text=element_text(size=14))
+
+p1+
+  geom_polygon(data = hull_data,
+               aes(colour = Location),
+               alpha = 0.3,
+               show.legend = FALSE)

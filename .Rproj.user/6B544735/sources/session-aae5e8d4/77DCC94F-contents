@@ -1,0 +1,17 @@
+set.seed(123)
+df <- data.frame(
+  x = rnorm(100),
+  y = rnorm(100),
+  group = factor(rep(letters[1:5], each = 20))
+)
+
+# Calculate the center and radius for each group
+group_centers <- aggregate(cbind(x, y) ~ group, data = df, FUN = mean)
+group_radii <- aggregate(cbind(radius) ~ group, data = df, FUN = function(x) max(dist(x)))
+
+# Plot the points and circles
+ggplot(df, aes(x, y)) +
+  geom_point() +
+  geom_circle(data = group_centers, aes(x0 = x, y0 = y, r = radius), fill = NA, color = "red", linetype = "dashed") +
+  facet_wrap(~group) +
+  theme_minimal()

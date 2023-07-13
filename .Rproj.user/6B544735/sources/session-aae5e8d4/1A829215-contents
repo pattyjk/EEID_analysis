@@ -1,0 +1,161 @@
+## Rwanda mosquito microbiome figures
+#setwd
+setwd("/Users/patty/OneDrive/Documents/GitHub/rawanda_mosquitos")
+
+#load packages
+library(ggplot2)
+library(dplyr)
+library(plyr)
+library(tidyr)
+library(vegan)
+library(reshape2)
+
+#read in data
+asv_table<-read.delim("asv_table.txt", row.names=1, header=T)
+taxonomy<-read.delim("taxonomy.tsv", header=T)
+metadata<-read.delim("Rwanda_2019_Master_MappingFile_BothRuns.txt", header=T)
+metadata_noctrl<-read.delim("mapfile_no_controls.txt", header=T)
+
+#calculate rarefaction curve
+rare_cur<-rarecurve(t(asv_table), step=10, tidy=T)
+
+#add metadata
+rare_cur<-merge(rare_cur, metadata_noctrl, by.x='Site', by.y='X.SampleID')
+rare_sum<-ddply(rare_cur, c('Genus', "Sample"), summarize, n=length(Species.x), sd=sd(Species.x), se=sd/n, mean=mean(Species.x))
+write.table(rare_sum, 'rare_sum.txt', row.names=F, quote=F, sep="\t")
+rare_sum<-read.delim('rare_sum.txt', header=T)
+rare_sum<-rare_sum%>%drop_na(se)
+rare_sum<-rare_sum%>%drop_na(Genus)
+
+#plot rarefaction curve
+pal<-c("#771155", "#114477",  "#117744",  "#777711",  "#774411",  "#771122",  "#252525", "#525252", "#737373", "#969696")
+ggplot(rare_sum, aes(Sample, mean, color=Genus))+
+  geom_point()+
+  theme_bw()+
+  xlim(c(0,4000))+
+  facet_wrap(~Location)+
+  scale_color_manual(values=pal)+
+  scale_y_continuous(expand=c(0,0))+
+  theme(text = element_text(size=14), axis.text = element_text(size=14), legend.text=element_text(size=14))+
+  ylab("ASVs Observed")+
+  xlab("Sequencing depth")+
+  geom_vline(xintercept = 2000, color = "red", size=1.1)
+
+#remove samples with <2000 sequences per sample
+asv_table_pruned<-asv_table[,-which(colSums(asv_table)<2000)]
+
+#rarefy OTU table to 2000 sequences per sample
+set.seed(503)
+asv_rare<-rrarefy(t(asv_table_pruned), sample=2000)
+
+#calculate beta diversity
+s16.pcoa<-capscale(asv_rare~1, method='jaccard')
+
+#calculate variance explained by first two axes
+100*round(s16.pcoa$CA$eig[1]/sum(s16.pcoa$CA$eig), 3)
+#42.9
+100*round(s16.pcoa$CA$eig[2]/sum(s16.pcoa$CA$eig), 3)
+#7.4
+
+#extract the coordinates
+s16.scores<-scores(s16.pcoa)
+s16.coords<-as.data.frame(s16.scores$sites)
+s16.coords$SampleID<-rownames(s16.coords)
+s16.coords<-merge(s16.coords, metadata_noctrl, by.x='SampleID', by.y="X.SampleID")
+s16.coords<-s16.coords%>%drop_na(Genus)
+
+#plot it yo
+ggplot(s16.coords, aes(MDS1, MDS2, color=Genus))+  
+  geom_point(aes(size=1.4))+
+  theme_bw()+
+  scale_color_manual(values=c("#045275", "#089099", "#7CCBA2", "#FCDE9C", "#F0746E", "#DC3977", "7C1D6F"))+
+  xlab("PC1-42.9%")+
+  ylab("PC2-7.4%")+
+  guides(size="none")+
+  theme(text = element_text(size=14),
+        axis.text = element_text(size=14), legend.text=element_text(size=14))+
+  scale_shape_manual(values=c(15,16)) 
+
+ggplot(s16.coords, aes(MDS1, MDS2, color=Location))+  
+  geom_point(aes(size=1.4))+
+  theme_bw()+
+  scale_color_manual(values=c("black", 'grey'))+
+  xlab("PC1-42.9%")+
+  ylab("PC2-7.4%")+
+  guides(size="none")+
+  theme(text = element_text(size=14),
+        axis.text = element_text(size=14), legend.text=element_text(size=14))+
+  scale_shape_manual(values=c(15,16)) 
+
+
+#Mosquito genus per site stacked bar plot
+mosq_genus<-read.delim("mosquito_genera.txt", header=T)
+pal<-c("#771155", "#114477",  "#117744",  "#777711",  "#774411",  "#771122",  "#252525", "#525252", "#737373", "#969696")
+ggplot(mosq_genus, aes(Site, Rel_abun, fill=Genus))+
+  geom_bar(stat='identity')+
+  scale_y_continuous(expand=c(0,0))+
+  theme_bw()+
+  xlab("")+
+  scale_fill_manual(values=pal)+
+  ylab("Relative Abundance")+
+  theme(text = element_text(size=14),
+        axis.text = element_text(size=14), legend.text=element_text(size=14))
+
+#Mosquito genus per habitat stacked bar plot
+mosq_hab<-read.delim("habitat_use.txt", header=T)
+ggplot(mosq_hab, aes(Site, Rel_abun, fill=Habitat))+
+  geom_bar(stat='identity')+
+  scale_y_continuous(expand=c(0,0))+
+  theme_bw()+
+  xlab("")+
+  scale_fill_manual(values=pal)+
+  ylab("Relative Abundance")+
+  theme(text = element_text(size=14),
+        axis.text = element_text(size=14), legend.text=element_text(size=14))
+
+#genera of interest for biocontrol
+genera<-read.delim("biocontrol_asv.txt", header=T)
+asv_table<-read.delim("asv_table.txt", header=T)
+top_asv_table<-merge(asv_table, genera, by.x='OTU.ID', by.y='ASV', all.x=F, all.y=T)
+top_asv_table<-top_asv_table[,-1]
+top_asv_table<-top_asv_table[,-557]
+
+#remove poor sequencing depth samples
+top_asv_table<-top_asv_table[,-which(colSums(top_asv_table)<50)]
+
+#rarefy OTU table to 2000 sequences per sample
+set.seed(503)
+top_rare<-t(top_asv_table)
+
+#calculate beta diversity
+top.pcoa<-capscale(top_rare~1, method='jaccard')
+
+#extract the coordinates
+top.scores<-scores(top.pcoa)
+top.coords<-as.data.frame(top.scores$sites)
+top.coords$SampleID<-rownames(top.coords)
+top.coords<-merge(top.coords, metadata_noctrl, by.x='SampleID', by.y="X.SampleID")
+top.coords<-top.coords%>%drop_na(Genus)
+
+#plot it yo
+ggplot(top.coords, aes(MDS1, MDS2, color=Genus))+  
+  geom_point(aes(size=1.4))+
+  theme_bw()+
+  scale_color_manual(values=c("#045275", "#089099", "#7CCBA2", "#FCDE9C", "#F0746E", "#DC3977", "7C1D6F"))+
+  xlab("PC1-61.9%")+
+  ylab("PC2-17.4%")+
+  guides(size="none")+
+  theme(text = element_text(size=14),
+        axis.text = element_text(size=14), legend.text=element_text(size=14))+
+  scale_shape_manual(values=c(15,16)) 
+
+ggplot(top.coords, aes(MDS1, MDS2, color=Location))+  
+  geom_point(aes(size=1.4))+
+  theme_bw()+
+  scale_color_manual(values=c("black", "grey"))+
+  xlab("PC1-61.9%")+
+  ylab("PC2-17.4%")+
+  guides(size="none")+
+  theme(text = element_text(size=14),
+        axis.text = element_text(size=14), legend.text=element_text(size=14))+
+  scale_shape_manual(values=c(15,16)) 

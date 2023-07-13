@@ -1,0 +1,35 @@
+##Bates et al 2022 data
+#read in data
+bates_metag_comparison <- read.delim("C:/Users/patty/OneDrive/Desktop/bates_metag_comparison.txt")
+
+#load packages
+library(ggplot2)
+library(dplyr)
+library(plyr)
+library(tidyr)
+library(reshape2)
+
+#reshape data
+bates_m<-melt(bates_metag_comparison)
+bates_m$Sample<-bates_m$variable
+bates_m<-separate(bates_m, col=Sample, into=c("SampleID", "Type", sep='_'))
+bates_m<-bates_m[,c(1,3:5)]
+bates_split<-split(bates_m, bates_m$Type)
+bates_m<-cbind(bates_split$S16, bates_split$m)
+names(bates_m)<-c("KO", "S16_abun", "SampleID", "Type1", "KO2", "M_abun", "SampleID2", "Type2")
+
+#calculate Spearman correlations for each sample
+func <- function(xx)
+{
+  return(data.frame(COR = cor(xx$S16_abun, xx$M_abun, method='spearman')))
+}
+bates_corr<-ddply(bates_m, .(SampleID), func)
+boxplot(bates_corr$COR, ylim=c(0,100))
+#plot pairwise figures
+ggplot(bates_m, aes(S16_abun, M_abun, color=SampleID))+
+  geom_point()+
+  geom_smooth(method='lm')+
+  facet_wrap(~SampleID, scales='free')+
+  theme_bw()+
+  xlab("KO Abundance- 16S rRNA gene")+
+  ylab("KO Abundance- Shotgun Metagenome")
