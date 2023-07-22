@@ -1,0 +1,6 @@
+eco<-read.delim("/Users/patty/OneDrive/Desktop/july_ecoplate.txt", header=T, row.names=1)
+eco_t<-t(eco)
+library(vegan)
+
+ra.out<-rda(eco_t, scale=T)
+biplot(ra.out, display='sites')
