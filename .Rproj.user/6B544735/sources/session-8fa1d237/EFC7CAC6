@@ -1,18 +1,18 @@
 {
-    "id": "67F97053",
-    "path": "~/GitHub/EEID_analysis/random_forest_KO.R",
-    "project_path": "random_forest_KO.R",
-    "type": "r_source",
-    "hash": "3887504210",
+    "id": "EFC7CAC6",
+    "path": "~/GitHub/EEID_analysis/PICRUSt2_analysis.md",
+    "project_path": "PICRUSt2_analysis.md",
+    "type": "markdown",
+    "hash": "0",
     "contents": "",
     "dirty": false,
-    "created": 1680445960687.0,
+    "created": 1680362321203.0,
     "source_on_save": false,
-    "relative_order": 4,
+    "relative_order": 2,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "233,0",
+        "cursorPosition": "212,0",
         "scrollLine": "0"
     },
     "folds": "",
@@ -20,7 +20,7 @@
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1681611772318,
+    "last_content_update": 1681611772263,
     "read_only": false,
     "read_only_alternatives": []
 }

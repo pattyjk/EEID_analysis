@@ -472,8 +472,8 @@ ggplot(stats, aes(Time, Clus_coeffi, color=Cat))+
 
 ### Adding metadata to Cytoscape tables
 ```
-test<-read.csv("Network_node_tables/dose103-t14.csv", header=T)
 setwd("EEID_analysis")
+test<-read.csv("Network_node_tables/dose103-t14.csv", header=T)
 
 #change to nodes folder
 setwd("./Network_node_tables/")
