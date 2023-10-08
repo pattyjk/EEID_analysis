@@ -392,7 +392,7 @@ Networks run in CoNet app in Cytoscape. Spearman correlations, p<0.05, Benjamini
 ## Plot network statistics
 ```
 #read in change in network statistics
-stats<-read.delim("network_stats_delta.txt", header=T)
+stats<-read.delim(" network_stats_delta.txt", header=T)
 
 #load ggplot
 library(ggplot2)
@@ -404,7 +404,8 @@ ggplot(stats, aes(as.numeric(Dose), No_nodes))+
   facet_wrap(~Temp)+
   ylab("Change in # nodes (T1-T0)")+
   xlab("Dose")+
-  geom_smooth()
+  stat_cor(method = "spearman", cor.coef.name="rho")+
+  geom_smooth(method='lm')
 
 ggplot(stats, aes(as.numeric(Dose), No_edges))+
   geom_point()+
@@ -412,7 +413,9 @@ ggplot(stats, aes(as.numeric(Dose), No_edges))+
   facet_wrap(~Temp)+
   ylab("Change in # edges (T1-T0)")+
   xlab("Dose")+
-  geom_smooth()
+ stat_cor(method = "spearman", cor.coef.name="rho")+
+  geom_smooth(method='lm')
+
 
 ggplot(stats, aes(as.numeric(Dose), Avg_num_neighbors))+
   geom_point()+
@@ -420,7 +423,9 @@ ggplot(stats, aes(as.numeric(Dose), Avg_num_neighbors))+
   facet_wrap(~Temp)+
   ylab("Change in avg # edges (T1-T0)")+
   xlab("Dose")+
-  geom_smooth()
+  stat_cor(method = "spearman", cor.coef.name="rho")+
+  geom_smooth(method='lm')
+
 
 ggplot(stats, aes(as.numeric(Dose), Clus_coeffi))+
   geom_point()+
@@ -428,7 +433,9 @@ ggplot(stats, aes(as.numeric(Dose), Clus_coeffi))+
   facet_wrap(~Temp)+
   ylab("Change in Clustering Coefficient (T1-T0)")+
   xlab("Dose")+
-  geom_smooth()
+  stat_cor(method = "spearman", cor.coef.name="rho")+
+  geom_smooth(method='lm')
+
 ```
 
 ## Network statistics through time at dose = 10^3
