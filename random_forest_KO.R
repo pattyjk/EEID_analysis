@@ -179,8 +179,8 @@ ggplot(sum_split2$T22, aes(as.numeric(Dose2), delta, color=Level2))+
   guides(fill=guide_legend(ncol=1))+
   xlab("Dose")
   
-```
-rf_ko<-read.delim("RF_ko_delta.txt", header=T)
+###
+rf_ko<-read.delim("~/Documents/GitHub/EEID_analysis/RF_ko_delta.txt", header=T)
 View(rf_ko)
 library(dplyr)
 library(plyr)
@@ -212,7 +212,7 @@ cors<-merge(cors, cor6, by='KO')
 cors_m<-melt(cors)
 
 #add metadata
-full_kegg<-read.delim("full_kegg.txt", header=T)
+full_kegg<-read.delim("~/Documents/GitHub/EEID_analysis/full_kegg.txt", header=T)
 cors_m<-merge(cors_m, full_kegg, by='KO')
 
 #reorder table by correlation size (ascending)
@@ -220,14 +220,21 @@ cors_m<-cors_m[order(cors_m$value),]
 
 
 #define a pallett
-pal2<-c("#771155","#114477",  "#117744", "#AAAA44",  "#774411",  "#771122", "#41AB5D", "#252525", "#525252")
+pal2<-c("#000000","#114477",  "#117744", "#AAAA44",  "#774411",  "#771122", "#41AB5D", "#252525", "#525252")
 pal<-c("#771155", "#CC99BB", "#114477", "#4477AA", "#117777", "#44AAAA", "#77CCCC", "#117744", "#44AA77", "#88CCAA", "#777711", "#AAAA44", "#DDDD77", "#774411", "#AA7744", "#DDAA77", "#771122", "#AA4455", "#DD7788","#41AB5D", "#252525", "#525252", "#737373", "#969696")
 
-ggplot(cors_m, aes(KO, value, color=variable))+
-  geom_point(aes(size=2))+
+pal3<-c("#800000FF", "#000000", "#5b8fa8ff", "#725663ff", "#adb17dff", "#ffb547ff", '#d6d6ceff', '#b1746fff', "#d49464ff")
+library(RColorBrewer)
+
+cors_m$variable<-gsub("Cor22", "22", cors_m$variable)
+cors_m$variable<-gsub("Cor14", "14", cors_m$variable)
+cors_m$variable<-gsub("Cor6", "6", cors_m$variable)
+ggplot(cors_m, aes(KO, value, color=Level1))+
+  geom_point(size=2.6)+
   theme_bw()+
   coord_flip()+
-  facet_wrap(~Level1)+ 
-  #scale_color_manual(values=pal)+
+  ylab("")+
+  facet_wrap(~variable, scales='free')+ 
+  scale_color_brewer(n="KEGG Level 1", palette = "Paired")+
   geom_hline(yintercept=0, color='black', size=1)+
   ylab("Spearman Rho")
