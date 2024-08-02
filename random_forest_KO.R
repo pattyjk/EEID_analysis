@@ -229,12 +229,20 @@ library(RColorBrewer)
 cors_m$variable<-gsub("Cor22", "22", cors_m$variable)
 cors_m$variable<-gsub("Cor14", "14", cors_m$variable)
 cors_m$variable<-gsub("Cor6", "6", cors_m$variable)
+
+write.table(cors_m, '~/Documents/GitHub/EEID_analysis/ko_cors.txt', sep='\t', quote=F, row.names=F)
+
 ggplot(cors_m, aes(KO, value, color=Level1))+
   geom_point(size=2.6)+
   theme_bw()+
   coord_flip()+
   ylab("")+
-  facet_wrap(~variable, scales='free')+ 
+  facet_wrap(~factor(variable, c("6", "14", "22")), scales='free')+ 
   scale_color_brewer(n="KEGG Level 1", palette = "Paired")+
   geom_hline(yintercept=0, color='black', size=1)+
   ylab("Spearman Rho")
+
+#create table
+library(reshape2)
+manu_table<-dcast(cors_m, formula = KO + Level1 + Level2 ~ variable, value)
+
